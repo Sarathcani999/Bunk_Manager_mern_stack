@@ -8,7 +8,6 @@ const cookieparser = require('cookie-parser')
 // creating an express object
 app = express()
 
-
 // Setting Up Static and handlebars views
 
 app.use(express.urlencoded({ extended : false }))
@@ -48,13 +47,16 @@ app.get('/viewAllSubjects' , (req,res) => {
     })
 })
 
-app.patch('/incrementAttendance' , async (req,res) => {
-    let sql = "UPDATE subject SET subject.count = subject.count+1 WHERE subject.s_id = " + req.body.subject_id 
+app.post('/markPresent' , async (req,res) => {
+    console.log("Reached Mark Present")
+    console.log(req.body)
+    let sql = "UPDATE subject SET subject.present = subject.present+1 , subject.total =subject.total+1 WHERE subject.s_id = " + req.body.subject_id 
 
     try{
         connection.query(sql , (error , results , fields) => {
             if (!error) {
                 res.send("No error")
+                console.log("No error")
             }else {
                 res.send("Error Updating the count")
             }
@@ -68,8 +70,8 @@ app.patch('/incrementAttendance' , async (req,res) => {
 
 })
 
-app.patch('/decrementAttendance' , async (req,res) => {
-    let sql = "UPDATE subject SET subject.count = subject.count-1 WHERE subject.s_id = " + req.body.subject_id 
+app.patch('/markAbsent' , async (req,res) => {
+    let sql = "UPDATE subject SET subject.total = subject.total+1 WHERE subject.s_id = " + req.body.subject_id 
 
     try{
         connection.query(sql , (error , results , fields) => {
@@ -87,8 +89,7 @@ app.patch('/decrementAttendance' , async (req,res) => {
 })
 
 
-
 // Establishment of Port at 3000 
 app.listen(5000 , () => {
-    console.log("Port established at 3000")
+    console.log("Port established at 5000")
 })
