@@ -2,7 +2,7 @@
 const express = require('express')
 const mysql = require('mysql')
 const path = require('path')
-const cookieparser = require('cookie-parser')
+const bodyparser = require('body-parser')
 
 
 // creating an express object
@@ -10,9 +10,15 @@ app = express()
 
 // Setting Up Static and handlebars views
 
-app.use(express.urlencoded({ extended : false }))
-app.use(express.json())
-app.use(cookieparser())
+// app.use(express.urlencoded({ extended : false }))
+// app.use(express.json())
+// app.use(bodyparser())
+
+app.use(bodyparser.urlencoded({
+    extended: true
+  }));
+app.use(bodyparser.json());
+
 app.set('views' , path.join( __dirname , './views'))
 app.set('view engine' , 'hbs')
 app.use(express.static(path.join(__dirname , './public')))
@@ -47,7 +53,7 @@ app.get('/viewAllSubjects' , (req,res) => {
     })
 })
 
-app.post('/markPresent' , async (req,res) => {
+app.post('/markPresent' , (req,res) => {
     console.log("Reached Mark Present")
     console.log(req.body)
     let sql = "UPDATE subject SET subject.present = subject.present+1 , subject.total =subject.total+1 WHERE subject.s_id = " + req.body.subject_id 
